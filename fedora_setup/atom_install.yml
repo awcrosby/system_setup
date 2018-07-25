@@ -1,0 +1,18 @@
+---
+
+- hosts: myhost
+  tasks:
+    - name: install python2-libselinux for ansible
+      become: yes
+      package:
+        name: python2-libselinux
+        state: present
+    - name: download atom rpm
+      get_url:
+        url: https://atom.io/download/rpm
+        dest: /home/awc/Downloads/atom.x86_64.rpm
+    - name: install locally downloaded atom rpm
+      become: yes
+      package:
+        name: /home/awc/Downloads/atom.x86_64.rpm
+        state: present
