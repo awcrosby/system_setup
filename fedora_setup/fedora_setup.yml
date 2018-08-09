@@ -1,10 +1,13 @@
 ---
 
-# run with the following "-K" for ansible to promt for SUDO password
-# ansible-playbook -c local -i inventory site.yml -v -K
 
-# install ansible role:
-# ansible-galaxy install hnakamur.atom-package
+## install ansible role:
+# cd fedora_setup
+# ansible-galaxy install hnakamur.atom-packages
+
+## run with the following "-K" for ansible to promt for SUDO password
+# ansible-playbook -c local -i inventory fedora_setup.yml -v -K
+
 
 ## specifics for asus u36jc fedora
 # usb live install via Troubleshooting > use without graphics
