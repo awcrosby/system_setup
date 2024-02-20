@@ -1,0 +1,34 @@
+---
+
+- name: Update system packages and install packages as root
+  hosts: myhost
+  become: true
+  tasks:
+    - name: Update all packages
+      ansible.builtin.dnf:
+        name: "*"
+        state: latest
+    - name: Install latest version of packages
+      ansible.builtin.package:
+        name:
+        - dnf-plugins-core
+        - firefox
+        - chromium
+        - python3-pip
+        - python3-devel
+        - code
+        - ripgrep
+        # - gzip
+        state: latest
+
+# - name: Install python packages in user home dir, outside of virtual env
+#   hosts: myhost
+#   tasks:
+#     - name: Install python packages
+#       pip:
+#         name: "{{item}}"
+#         extra_args: --user
+#       with_items:
+#         - flake8
+#         - pycodestyle
+#         - llm

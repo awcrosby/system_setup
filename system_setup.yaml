@@ -1,0 +1,5 @@
+---
+
+- import_playbook: playbooks/packages.yaml
+- import_playbook: playbooks/docker.yaml
+- import_playbook: playbooks/terminal_config.yaml

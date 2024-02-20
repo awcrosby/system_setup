@@ -1,0 +1,40 @@
+---
+
+- name: Install Docker Engine on Fedora
+  hosts: myhost
+  become: true
+  tasks:
+    - name: Add Docker GPG key.
+      rpm_key:
+        key: https://download.docker.com/linux/fedora/gpg
+        state: present
+    - name: Set up the repository
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/fedora/docker-ce.repo
+        dest: /etc/yum.repos.d/docker-ce.repo
+        mode: '0644'
+        owner: root
+        group: root
+    - name: Install docker engine
+      ansible.builtin.package:
+        name:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+        - docker-buildx-plugin
+        - docker-compose-plugin
+        state: latest
+    - name: Make sure docker service is running and enabled to start on boot
+      ansible.builtin.systemd_service:
+        name: docker
+        state: started
+        enabled: true
+    - name: Ensure the docker group exists
+      ansible.builtin.group:
+        name: docker
+        state: present
+    - name: Add user to the docker group
+      ansible.builtin.user:
+        name: "{{ user }}"
+        groups: docker
+        append: true  # afterwards needs one: `$ newgrp docker`, logout, or reboot
