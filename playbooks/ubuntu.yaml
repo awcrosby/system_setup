@@ -1,0 +1,39 @@
+---
+
+- name: Update system packages and install packages as root
+  hosts: myhost
+  become: true
+  tasks:
+    - name: Update repositories cache (apt-get update), and upgrade all packages
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+        name: "*"
+        state: latest
+    - name: Install latest version of OS packages
+      ansible.builtin.package:
+        name:
+        - tmux
+        - tree
+        # - firefox
+        # - code  # * `sudo apt install ./code_1.86.2-1707854558_amd64.deb`  # download code debian pkg
+        # - python3-pip
+        # - python3-devel
+        state: latest
+    - name: Install snap packages
+      community.general.snap:
+        name:
+          - go
+          - kubectl
+          - etcd
+        classic: true
+    # - name: Deletes and resets pulseaudio config files (use if audio not working)
+    #     # firefox embedded audio outside youtube not working
+    #     # apt install ffmpeg, didn't fix, also broke audio and made restarts hang, removed
+    #     # apt install ubuntu-restricted-extras, installed but think maybe not needed, so removed
+    #     # resetting pulseaudio config fixed ffmpeg issue and maybe fixed root problem
+    #   ansible.builtin.shell:
+    #     cmd: rm ~/.config/pulse/* && pulseaudio -k && pulseaudio --start
+
+# sudo update-locale LC_TIME="en_GB.UTF-8"  # Have calendar week start on Monday
+

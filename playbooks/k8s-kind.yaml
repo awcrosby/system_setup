@@ -1,0 +1,39 @@
+---
+
+# - name: Install packages
+#   hosts: myhost
+#   become: true
+#   tasks:
+#     - name: Install snap packages
+#       community.general.snap:
+#         name:
+#           - go
+#           - kubectl
+#           - etcd
+#         classic: true
+
+- name: Install kind, not-root, via go
+  hosts: myhost
+  tasks:
+    - name: Check if kind is installed
+      shell: "which kind"
+      register: which_kind
+      ignore_errors: true
+    - name: Install kind via go
+      shell:
+        cmd: go install sigs.k8s.io/kind@v0.22.0
+      when: which_kind.stdout == ""
+    - name: Allow go's kind binary to be found on PATH
+      ansible.builtin.lineinfile:
+        path: ~/.bashrc
+        state: present
+        line: export PATH="$PATH:/home/$USER/go/bin"
+    - name: bashrc settings
+      ansible.builtin.lineinfile:
+        path: ~/.bashrc
+        state: present
+        line: '{{item}}'
+      with_items:
+        - 'alias k="kubectl"  # user-added alias'
+        - 'source <(kubectl completion bash)  # user-added auto-completion'
+        - 'complete -o default -F __start_kubectl k  # user-added auto-completion for alias'

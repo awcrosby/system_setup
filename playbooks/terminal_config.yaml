@@ -1,6 +1,6 @@
 ---
 
-- name: Set config for common terminal tools
+- name: Config for terminal & editor tools
   hosts: myhost
   tasks:
     - name: bashrc settings
@@ -9,13 +9,14 @@
         state: present
         line: '{{item}}'
       with_items:
-        - 'PS1="\u:\W\$ "  # user-added prompt format'
         - 'export EDITOR="vim"  # user-added'
-        - '# export GIT_COMPLETION_CHECKOUT_NO_GUESS=1  # user-added stops git auto-complete remote branches'
-        - '# export V="source /home/awc/code/env/bin/activate"  # user-added shortcut for common python env'
+        # - 'PS1="\u:\W\$ "  # user-added prompt format'
+        # - 'export GIT_COMPLETION_CHECKOUT_NO_GUESS=1  # user-added stops git auto-complete remote branches'
+        # - 'export V="source /home/awc/code/env/bin/activate"  # user-added shortcut for common python env'
     - name: vim tab settings
       ansible.builtin.blockinfile:
         path: ~/.vimrc
+        create: true
         marker: '" {mark} ANSIBLE MANAGED BLOCK'
         block: |
           " For indents that consist of 4 space characters but are entered with the tab key:
@@ -27,9 +28,31 @@
     - name: Additional vim settings
       ansible.builtin.lineinfile:
         path: ~/.vimrc
+        create: true
         state: present
         line: '{{item}}'
       with_items:
         - 'set bg=dark  " user-added, dark background'
         - 'set visualbell " user-added, visual cue instead of audible beep'
         - 'set number  " user-added show line numbers'
+    - name: Keep bash prompt coloring inside tmux
+      ansible.builtin.lineinfile:
+        path: ~/.tmux.conf
+        create: true
+        state: present
+        line: set -g default-terminal "xterm-256color"
+    - name: vscode setting - add line that can be copied to dict
+      ansible.builtin.lineinfile:
+        path: ~/.config/Code/User/settings.json
+        create: true
+        state: present
+        line: '// "window.dialogStyle": "custom",  // stops the sound on dialogs like move & delete'
+    - name: Git config
+      ansible.builtin.blockinfile:
+        path: ~/.gitconfig
+        create: true
+        marker: '# {mark} ANSIBLE MANAGED BLOCK'
+        block: |
+          [alias]
+          logline = log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+          lg = log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit -10

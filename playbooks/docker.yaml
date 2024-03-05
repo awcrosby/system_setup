@@ -1,20 +1,36 @@
 ---
 
-- name: Install Docker Engine on Fedora
+- name: Install Docker Engine on Fedora or Ubuntu
   hosts: myhost
   become: true
   tasks:
-    - name: Add Docker GPG key.
+    - name: Add Docker GPG key on Fedora
       rpm_key:
         key: https://download.docker.com/linux/fedora/gpg
         state: present
-    - name: Set up the repository
+      when:
+        ansible_distribution != "Ubuntu"  # TODO: Set to == ~"RH|Fedora"
+    - name: Add Docker GPG key on Ubuntu
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+      when:
+        ansible_distribution == "Ubuntu"
+    - name: Set up the repository on Fedora
       ansible.builtin.get_url:
         url: https://download.docker.com/linux/fedora/docker-ce.repo
         dest: /etc/yum.repos.d/docker-ce.repo
         mode: '0644'
         owner: root
         group: root
+      when:
+        ansible_distribution != "Ubuntu"  # TODO: Set to == ~"RH|Fedora"
+    - name: Set up the repository on Ubuntu
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+      when:
+        ansible_distribution == "Ubuntu"
     - name: Install docker engine
       ansible.builtin.package:
         name:
@@ -25,8 +41,8 @@
         - docker-compose-plugin
         state: latest
     - name: Make sure docker service is running and enabled to start on boot
-      ansible.builtin.systemd_service:
-        name: docker
+      ansible.builtin.service:  # note: error w/ ansible.builtin.systemd_service not resolved with ubuntu ansible 2.9.6
+        name: docker  # TODO: used systemd_service w/ fedora test this w/ fedora
         state: started
         enabled: true
     - name: Ensure the docker group exists
