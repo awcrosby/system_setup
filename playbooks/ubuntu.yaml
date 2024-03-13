@@ -15,9 +15,11 @@
         name:
         - tmux
         - tree
+        - python3-pip
+        - python3.8-venv  # ubuntu 20.04 default py
+        - graphviz  # supports python diagrams package
         # - firefox
         # - code  # * `sudo apt install ./code_1.86.2-1707854558_amd64.deb`  # download code debian pkg
-        # - python3-pip
         # - python3-devel
         state: latest
     - name: Install snap packages
