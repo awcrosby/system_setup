@@ -10,6 +10,9 @@
         cache_valid_time: 3600
         name: "*"
         state: latest
+    - name: Add deadsnakes repository to install newer python versions
+      ansible.builtin.apt_repository:
+        repo: ppa:deadsnakes/ppa
     - name: Install latest version of OS packages
       ansible.builtin.package:
         name:
@@ -17,10 +20,10 @@
         - tree
         - python3-pip
         - python3.8-venv  # ubuntu 20.04 default py
+        # - Python3.12  # does not work only seems to use default repo, but `sudo apt install Python3.12` works ... via deadsnakes Personal Package Archive
+        - python3.12-venv  # ubuntu 20.04 default py
         - graphviz  # supports python diagrams package
-        # - firefox
         # - code  # * `sudo apt install ./code_1.86.2-1707854558_amd64.deb`  # download code debian pkg
-        # - python3-devel
         state: latest
     - name: Install snap packages
       community.general.snap:
@@ -38,4 +41,3 @@
     #     cmd: rm ~/.config/pulse/* && pulseaudio -k && pulseaudio --start
 
 # sudo update-locale LC_TIME="en_GB.UTF-8"  # Have calendar week start on Monday
-
