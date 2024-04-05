@@ -12,7 +12,8 @@
         - 'export EDITOR="vim"  # user-added'
         # - 'PS1="\u:\W\$ "  # user-added prompt format'
         # - 'export GIT_COMPLETION_CHECKOUT_NO_GUESS=1  # user-added stops git auto-complete remote branches'
-        # - 'export V="source /home/awc/code/env/bin/activate"  # user-added shortcut for common python env'
+        - 'alias v="source venv/bin/activate"  # user-added shortcut for common python env'
+        - 'bind "set bell-style none"  # user-added, stop sound on tab completion'
     - name: vim tab settings
       ansible.builtin.blockinfile:
         path: ~/.vimrc
