@@ -25,13 +25,6 @@
         - graphviz  # supports python diagrams package
         # - code  # * `sudo apt install ./code_1.86.2-1707854558_amd64.deb`  # download code debian pkg
         state: latest
-    - name: Install snap packages
-      community.general.snap:
-        name:
-          - go
-          - kubectl
-          - etcd
-        classic: true
     # - name: Deletes and resets pulseaudio config files (use if audio not working)
     #     # firefox embedded audio outside youtube not working
     #     # apt install ffmpeg, didn't fix, also broke audio and made restarts hang, removed
